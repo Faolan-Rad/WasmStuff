@@ -7,7 +7,7 @@ namespace WasmTests
 {
     public unsafe abstract class Sample
     {
-        public abstract int Main(char* a);
+        public abstract int Main(int a);
     }
     internal unsafe class Program
     {
@@ -17,14 +17,18 @@ namespace WasmTests
             var module = new Module();
             var wasmCode = File.OpenRead("./Test.wasm");
             using var instance = Compile.FromBinary<Sample>(wasmCode)(new ImportDictionary());
-            //try
-            //{
-                Console.WriteLine();
-            //}
-            //catch
-            //{
-            //    Console.WriteLine("Error");
-            //}
+            var test = new Task(() => instance.Exports.Main(0));
+            try
+            {
+                test.Start();
+                test.Wait();
+            }
+            catch 
+            {
+                Console.WriteLine("Error");
+            }
+            Console.WriteLine("WALA");
+
 
         }
     }
