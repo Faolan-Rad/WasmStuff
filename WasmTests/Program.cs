@@ -14,10 +14,10 @@ namespace WasmTests
         static void Main(string[] args)
         {
             Console.WriteLine("Hello, World!");
-            var module = new Module();
             var wasmCode = File.OpenRead("./Test.wasm");
             using var instance = Compile.FromBinary<Sample>(wasmCode)(new ImportDictionary());
-            var test = new Task(() => instance.Exports.Main(0));
+            var ee = new CancellationToken();
+            var test = new Task(() => instance.Exports.Main(0), ee);
             try
             {
                 test.Start();
